@@ -7,6 +7,8 @@ const database =  require("./database/database")
 // connection database
 database();
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(bodyParser());
 
 app.listen(process.env.PORT,()=>{
