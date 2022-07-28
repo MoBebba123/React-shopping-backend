@@ -46,6 +46,17 @@ const userSchema =  new Schema({
 {
     timestamps: true
 })
+userSchema.virtual("fullName").get(function () {
+    return `${this.firstName} ${this.lastName}`;
+  });
+  
+  userSchema.methods = {
+    authenticate: async function (password) {
+      return await bcrypt.compare(password, this.hash_password);
+    },
+  };
+  
+
 
 
 module.exports = mongoose.Schema("User", userSchema)
