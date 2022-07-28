@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
 const Schema =  mongoose.Schema;
 
 const userSchema =  new Schema({
@@ -59,4 +61,4 @@ userSchema.virtual("fullName").get(function () {
 
 
 
-module.exports = mongoose.Schema("User", userSchema)
+module.exports = mongoose.model("User", userSchema)
