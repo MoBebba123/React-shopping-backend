@@ -8,8 +8,8 @@ const database =  require("./database/database")
 database();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-app.use(bodyParser());
 
 app.listen(process.env.PORT,()=>{
     console.log(`server is running on Port ${process.env.PORT}`)
