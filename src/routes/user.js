@@ -1,10 +1,9 @@
 const express = require("express");
 const { signup } = require("../controllers/user");
-const User = require('../schemas/user')
 const router = express.Router();
 
 
-router.route("/signin").post(signup)
+router.route("/signup").post(signup);
 
 
 module.exports =  router;
