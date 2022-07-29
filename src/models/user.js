@@ -33,7 +33,7 @@ const userSchema = new Schema({
     unique: true,
     lowercase: true,
   },
-  hash_password: {
+  password: {
     type: String,
     required: true,
   },
