@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const Schema = mongoose.Schema;
 
@@ -39,11 +38,28 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin", "super-admin"],
+    enum: ["user", "marchent", "worker", "admin"],
     default: "user",
   },
+  merchant: {
+    type: Schema.Types.ObjectId,
+    ref: "Merchent",
+    required: true,
+    default: null
+  },
+  avatar: {
+    public_id: {
+      type: String,
+      required: true,
+      default: ""
+    },
+    url: {
+      type: String,
+      required:true,
+      default: ""
+    },
+  },
   contactNumber: { type: String },
-  pofilePicture: { type: String },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 },
