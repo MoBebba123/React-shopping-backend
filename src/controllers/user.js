@@ -27,7 +27,7 @@ exports.signup = async (req, res, next) => {
             .cookie("access_token", token, {
                 expires: new Date(
                     Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-                  ),
+                ),
                 httpOnly: true,
             })
             .status(201)
