@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const jwt = require("jsonwebtoken")
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -38,24 +38,16 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["user", "marchent", "worker", "admin"],
+    enum: ["user", "merchent", "worker", "admin"],
     default: "user",
-  },
-  merchant: {
-    type: Schema.Types.ObjectId,
-    ref: "Merchent",
-    required: true,
-    default: null
   },
   avatar: {
     public_id: {
       type: String,
-      required: true,
       default: ""
     },
     url: {
       type: String,
-      required:true,
       default: ""
     },
   },
@@ -70,6 +62,21 @@ userSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+// JWT TOKEN
+userSchema.methods.getJWTToken = function () {
+  return jwt.sign(
+  {
+      id: this._id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      role: this.role,
+  },
+  process.env.JWT_SECRET,
+  {
+  expiresIn: process.env.JWT_EXPIRE,
+  });
+};
 
 
 

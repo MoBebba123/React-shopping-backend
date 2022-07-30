@@ -1,10 +1,13 @@
 const express = require("express");
-const { signup, signin } = require("../controllers/user");
+const { signup, signin, logout, getUserDetails } = require("../controllers/user");
+const { isAuthenticatedUser, isAdmin } = require("../middleware/auth");
 const router = express.Router();
 
 
-router.route("/signup").post(signup);
+router.route("/register").post(signup);
 
-router.route("/signin").post(signin);
+router.route("/login").post(signin);
+router.route("/logout").get(logout);
+router.route("/profile/me").get(isAuthenticatedUser, getUserDetails);
 
 module.exports =  router;
