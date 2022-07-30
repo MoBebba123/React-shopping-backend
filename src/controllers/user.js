@@ -5,6 +5,7 @@ const ErrorHandler = require("../utils/error");
 const jwt = require("jsonwebtoken");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const sendToken = require("../utils/jwtToken");
+const sendEmail = require("../utils/sendEmail");
 
 
 exports.signup = async (req, res, next) => {
@@ -47,9 +48,15 @@ exports.signin = async (req, res, next) => {
 
         const isCorrect = await bcrypt.compare(password, user.password);
         if (!isCorrect) return next(new ErrorHandler("Password does not match", 400));
-  
-        sendToken(user, 200, res);
 
+
+        
+        sendToken(user, 200, res);
+        await sendEmail({
+            email: user.email,
+            subject:"welcome back",
+            message: "test"
+        })
     } catch (err) {
         return res.send(err)
     }
