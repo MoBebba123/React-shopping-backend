@@ -7,7 +7,7 @@ const sendEmail = async (option) => {
 
   const msg = {
     to: option.email,
-    from: 'mohamedbebba1@gmail.com', // Change to your verified sender
+    from: 'mohamedbebba1@gmail.com', // Change to your verified sender.
     subject: option.subject,
     text: option.message,
 
