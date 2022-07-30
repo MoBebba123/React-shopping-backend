@@ -4,7 +4,7 @@ const shortid = require("shortid");
 const ErrorHandler = require("../utils/error");
 const jwt = require("jsonwebtoken");
 const catchAsyncError = require("../middleware/catchAsyncError");
-const sendToken = require("../utils/jwtToken")
+const sendToken = require("../utils/jwtToken");
 
 
 exports.signup = async (req, res, next) => {
@@ -22,6 +22,7 @@ exports.signup = async (req, res, next) => {
 
         await newUser.save();
         sendToken(newUser, 200, res);
+      
 
     } catch (err) {
         res.status(400).send(err)
@@ -46,6 +47,7 @@ exports.signin = async (req, res, next) => {
 
         const isCorrect = await bcrypt.compare(password, user.password);
         if (!isCorrect) return next(new ErrorHandler("Password does not match", 400));
+  
         sendToken(user, 200, res);
 
     } catch (err) {
@@ -81,3 +83,55 @@ exports.getUserDetails = catchAsyncError(async (req, res, next) => {
         })
     }
 });
+//get users Only admins
+exports.getAllUsers = catchAsyncError(async (req, res, next) => {
+    
+    const users = await User.find({});
+    if (users) {
+        res.status(200).send(users);
+    }
+    else {
+        res.status(400).send({
+            message: 'no user found'
+        })
+    }
+});
+
+// Get single user (admin)
+exports.getSingleUser = catchAsyncError(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+  
+    if (!user) {
+      return next(
+        new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
+      );
+    }
+  
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  });
+
+  
+// update User Role -- Admin
+exports.updateUserRole = catchAsyncError(async (req, res, next) => {
+    const newUserData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,      
+      email: req.body.email,
+      role: req.body.role,
+    };
+  
+    await User.findByIdAndUpdate(req.params.id, newUserData, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+  
+    res.status(200).json({
+      success: true,
+      
+    });
+  });
+  
