@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
-
+const cloudinary = require("cloudinary").v2
 
 exports.signup = async (req, res, next) => {
 
@@ -143,22 +143,40 @@ exports.updateUserRole = catchAsyncError(async (req, res, next) => {
   });
   // update User Profile
 exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
-    const newUserData = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,      
-      email: req.body.email,
-      role: req.body.role,
-    };
+    const user = await User.findById(req.user.id)
+    if (user.avatar.public_id !== '') {
   
-    await User.findByIdAndUpdate(req.params.id, newUserData, {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
-    });
+      const imageId = user.avatar.public_id;
   
+      await cloudinary.v2.uploader.destroy(imageId);
+  
+    }
+    const file = req.body.avatar
+  
+    if (file) {
+      const myCloud = await cloudinary.v2.uploader.upload(file, {
+        folder: "proimages",
+      });
+      if (user) {
+        user.firstName = req.body.firstName || user.firstName;
+        user.lastName = req.body.lastName || user.lastName;
+        user.email = req.body.email || user.email;
+        user.avatar.public_id = myCloud?.public_id || user.avatar.public_id;
+        user.avatar.url = myCloud?.secure_url || user.avatar.url;
+      }
+    } else {
+      user.firstName = req.body.firstName || user.firstName;
+      user.lastName = req.body.lastName || user.lastName;
+      user.email = req.body.email || user.email;
+    }
+  
+    await user.save({
+      validateBeforeSave: false
+    })
     res.status(200).json({
-      success: true,
-      
-    });
+      succuss: true,
+      message: "user Updated succussfully",
+      user
+    })
   });
   
