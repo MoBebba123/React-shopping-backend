@@ -218,3 +218,26 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
       message: "User Deleted Successfully",
     });
   });
+
+  // update User password
+exports.updatePassword = catchAsyncError(async (req, res, next) => {
+    const user = await User.findById(req.user.id).select("+password");
+  
+    const isPasswordMatched = await bcrypt.compare(req.body.oldPassword, user.password);
+    
+    if (!isPasswordMatched) {
+      return next(new ErrorHandler("Old password is incorrect", 400));
+    }
+  
+    if (req.body.newPassword !== req.body.confirmPassword) {
+      return next(new ErrorHandler("Passwords do not match", 400));
+    }
+    const salt = bcrypt.genSaltSync(10);
+        
+    user.password = bcrypt.hashSync(req.body.newPassword, salt);
+  
+    await user.save();
+  
+    sendToken(user, 200, res);
+  });
+  

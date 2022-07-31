@@ -71,6 +71,7 @@ userSchema.methods.getJWTToken = function () {
       lastName: this.lastName,
       email: this.email,
       role: this.role,
+      fullName: this.fullName
   },
   process.env.JWT_SECRET,
   {
