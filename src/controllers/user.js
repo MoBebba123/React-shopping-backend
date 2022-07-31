@@ -23,7 +23,11 @@ exports.signup = async (req, res, next) => {
 
         await newUser.save();
         sendToken(newUser, 200, res);
-      
+        await sendEmail({
+            email: newUser.email,
+            subject:"welcome",
+            message: `thank you for registration ${newUser.fullname}`
+        })
 
     } catch (err) {
         res.status(400).send(err)
@@ -52,11 +56,7 @@ exports.signin = async (req, res, next) => {
 
         
         sendToken(user, 200, res);
-        await sendEmail({
-            email: user.email,
-            subject:"welcome back",
-            message: "test"
-        })
+     
     } catch (err) {
         return res.send(err)
     }
@@ -123,6 +123,26 @@ exports.getSingleUser = catchAsyncError(async (req, res, next) => {
   
 // update User Role -- Admin
 exports.updateUserRole = catchAsyncError(async (req, res, next) => {
+    const newUserData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,      
+      email: req.body.email,
+      role: req.body.role,
+    };
+  
+    await User.findByIdAndUpdate(req.params.id, newUserData, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+  
+    res.status(200).json({
+      success: true,
+      
+    });
+  });
+  // update User Profile
+exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
     const newUserData = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,      
