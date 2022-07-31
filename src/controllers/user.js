@@ -25,7 +25,7 @@ exports.signup = async (req, res, next) => {
         sendToken(newUser, 200, res);
         await sendEmail({
             email: newUser.email,
-            subject:"welcome",
+            subject: "welcome",
             message: `thank you for registration ${newUser.fullname}`
         })
 
@@ -54,9 +54,9 @@ exports.signin = async (req, res, next) => {
         if (!isCorrect) return next(new ErrorHandler("Password does not match", 400));
 
 
-        
+
         sendToken(user, 200, res);
-     
+
     } catch (err) {
         return res.send(err)
     }
@@ -92,7 +92,7 @@ exports.getUserDetails = catchAsyncError(async (req, res, next) => {
 });
 //get users Only admins
 exports.getAllUsers = catchAsyncError(async (req, res, next) => {
-    
+
     const users = await User.find({});
     if (users) {
         res.status(200).send(users);
@@ -107,76 +107,91 @@ exports.getAllUsers = catchAsyncError(async (req, res, next) => {
 // Get single user (admin)
 exports.getSingleUser = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.params.id);
-  
-    if (!user) {
-      return next(
-        new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
-      );
-    }
-  
-    res.status(200).json({
-      success: true,
-      user,
-    });
-  });
 
-  
+    if (!user) {
+        return next(
+            new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
+        );
+    }
+
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+
 // update User Role -- Admin
 exports.updateUserRole = catchAsyncError(async (req, res, next) => {
     const newUserData = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,      
-      email: req.body.email,
-      role: req.body.role,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        role: req.body.role,
     };
-  
+
     await User.findByIdAndUpdate(req.params.id, newUserData, {
-      new: true,
-      runValidators: true,
-      useFindAndModify: false,
+        new: true,
+        runValidators: true,
+        useFindAndModify: false,
     });
-  
+
     res.status(200).json({
-      success: true,
-      
+        success: true,
+
     });
-  });
-  // update User Profile
+});
+// update User Profile
 exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.user.id)
     if (user.avatar.public_id !== '') {
-  
-      const imageId = user.avatar.public_id;
-  
-      await cloudinary.v2.uploader.destroy(imageId);
-  
+
+        const imageId = user.avatar.public_id;
+
+        await cloudinary.v2.uploader.destroy(imageId);
+
     }
     const file = req.body.avatar
-  
+
     if (file) {
-      const myCloud = await cloudinary.v2.uploader.upload(file, {
-        folder: "proimages",
-      });
-      if (user) {
+        const myCloud = await cloudinary.v2.uploader.upload(file, {
+            folder: "proimages",
+        });
+        if (user) {
+            user.firstName = req.body.firstName || user.firstName;
+            user.lastName = req.body.lastName || user.lastName;
+            user.email = req.body.email || user.email;
+            user.avatar.public_id = myCloud?.public_id || user.avatar.public_id;
+            user.avatar.url = myCloud?.secure_url || user.avatar.url;
+        }
+    } else {
         user.firstName = req.body.firstName || user.firstName;
         user.lastName = req.body.lastName || user.lastName;
         user.email = req.body.email || user.email;
-        user.avatar.public_id = myCloud?.public_id || user.avatar.public_id;
-        user.avatar.url = myCloud?.secure_url || user.avatar.url;
-      }
-    } else {
-      user.firstName = req.body.firstName || user.firstName;
-      user.lastName = req.body.lastName || user.lastName;
-      user.email = req.body.email || user.email;
     }
-  
+
     await user.save({
-      validateBeforeSave: false
+        validateBeforeSave: false
     })
     res.status(200).json({
-      succuss: true,
-      message: "user Updated succussfully",
-      user
+        succuss: true,
+        message: "user Updated succussfully",
+        user
     })
-  });
-  
+});
+
+exports.deleteProfilePicture = catchAsyncError(async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+    if (user) {
+        const imageId = user.avatar.public_id;
+        await cloudinary.v2.uploader.destroy(imageId);
+
+        user.avatar.url = "";
+        const updatedUser = await user.save({
+            validateBeforeSave: false
+        });
+        res.send({ message: 'profile Picture deleted successfully', user: updatedUser });
+    } else {
+        res.status(404).send({ message: 'User Not Found' });
+    }
+});
