@@ -48,6 +48,7 @@ const merchantItemSchema = new Schema({
 const merchantSchema = new Schema({
   name: { type: String, required: true },
   hero: { type: String, required: true },
+  owner:{ type: String, required: true },
   category: { type: String, required: true },
   email:{ type: String, required: true , unique:true},
   password:{ type: String, required: true},

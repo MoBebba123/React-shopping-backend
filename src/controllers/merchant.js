@@ -3,18 +3,31 @@ const sendMerchantToken = require('../utils/merchantToken');
 const bcrypt = require("bcryptjs");
 const catchAsyncError = require('../middleware/catchAsyncError');
 const ErrorHandler = require('../utils/error');
+const sendEmail = require('../utils/sendEmail');
 
 
 
 exports.registerMerchant = catchAsyncError(async (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(req.body.password, 10);
+  const hash = bcrypt.hashSync(req.body.password, salt);
   const merchant = new Merchant({
     ...req.body, password: hash
   })
   await merchant.save();
   sendMerchantToken(merchant, 201, res);
 
+  const message= `thank you for registration ${merchant.owner}`
+  await sendEmail({
+    email: merchant.email,
+    subject: "welcome",
+    message
+})
+const adminMessage= `you got a new request from  ${merchant.email}`
+await sendEmail({
+  email: "admin@admin.com",
+  subject: "welcome",
+  message:adminMessage
+})
 })
 
 exports.signinMerchant = catchAsyncError(async (req, res, next) => {
