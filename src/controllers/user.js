@@ -198,61 +198,60 @@ exports.deleteProfilePicture = catchAsyncError(async (req, res, next) => {
 // Delete User --Admin
 exports.deleteUser = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.params.id);
-  
-  
+
+
     if (!user) {
-      return next(
-        new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 404)
-      );
+        return next(
+            new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 404)
+        );
     }
     if (user.role === "admin") {
-      return next(
-        new ErrorHandler('Can not delete admin Users', 401)
-      );
+        return next(
+            new ErrorHandler('Can not delete admin Users', 401)
+        );
     }
-  
-    await user.remove();
-  
-    res.status(200).json({
-      success: true,
-      message: "User Deleted Successfully",
-    });
-  });
 
-  // update User password
+    await user.remove();
+
+    res.status(200).json({
+        success: true,
+        message: "User Deleted Successfully",
+    });
+});
+
+// update User password
 exports.updatePassword = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.user.id).select("+password");
-  
+
     const isPasswordMatched = await bcrypt.compare(req.body.oldPassword, user.password);
-    
+
     if (!isPasswordMatched) {
-      return next(new ErrorHandler("Old password is incorrect", 400));
+        return next(new ErrorHandler("Old password is incorrect", 400));
     }
-  
+
     if (req.body.newPassword !== req.body.confirmPassword) {
-      return next(new ErrorHandler("Passwords do not match", 400));
+        return next(new ErrorHandler("Passwords do not match", 400));
     }
     const salt = bcrypt.genSaltSync(10);
-        
+
     user.password = bcrypt.hashSync(req.body.newPassword, salt);
-  
+
     await user.save();
-  
+
     sendToken(user, 200, res);
-  });
-    // delete own profile
+});
+// delete own profile
 exports.deleteMe = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.user.id)
-    if(user){
+    if (user) {
         await user.remove();
         res.status(301).json({
-            success: true, 
-            message:'user deleted'
+            success: true,
+            message: 'user deleted'
         })
-    }else{
+    } else {
         return next(new ErrorHandler("User not found", 404));
 
     }
-  });
-  
-  
+});
+
