@@ -195,3 +195,26 @@ exports.deleteProfilePicture = catchAsyncError(async (req, res, next) => {
         res.status(404).send({ message: 'User Not Found' });
     }
 });
+// Delete User --Admin
+exports.deleteUser = catchAsyncError(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+  
+  
+    if (!user) {
+      return next(
+        new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 404)
+      );
+    }
+    if (user.role === "admin") {
+      return next(
+        new ErrorHandler('Can not delete admin Users', 401)
+      );
+    }
+  
+    await user.remove();
+  
+    res.status(200).json({
+      success: true,
+      message: "User Deleted Successfully",
+    });
+  });
