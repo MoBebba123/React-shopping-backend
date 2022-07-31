@@ -240,4 +240,19 @@ exports.updatePassword = catchAsyncError(async (req, res, next) => {
   
     sendToken(user, 200, res);
   });
+    // delete own profile
+exports.deleteMe = catchAsyncError(async (req, res, next) => {
+    const user = await User.findById(req.user.id)
+    if(user){
+        await user.remove();
+        res.status(301).json({
+            success: true, 
+            message:'user deleted'
+        })
+    }else{
+        return next(new ErrorHandler("User not found", 404));
+
+    }
+  });
+  
   
