@@ -1,9 +1,11 @@
 const express = require('express');
-const { getMerchants, getMerchant } = require('../controllers/merchant')
+const { registerMerchant, signinMerchant } = require('../controllers/merchant')
 
 const merchantRouter = express.Router();
 
-merchantRouter.route("/merchants").get(getMerchants);
-merchantRouter.get('/merchant/:id', getMerchant);
+
+merchantRouter.route("/merchant/register").post(registerMerchant);
+merchantRouter.route("/merchant/signin").post(signinMerchant);
+
 
 module.exports = merchantRouter;

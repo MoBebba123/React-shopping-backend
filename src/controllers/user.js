@@ -2,7 +2,6 @@ const User = require("../models/user")
 const bcrypt = require("bcryptjs");
 const shortid = require("shortid");
 const ErrorHandler = require("../utils/error");
-const jwt = require("jsonwebtoken");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");

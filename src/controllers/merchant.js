@@ -1,40 +1,46 @@
 const { Merchant, MerchantItem, ItemGroup } = require('../models/merchent');
+const sendMerchantToken = require('../utils/merchantToken');
+const bcrypt = require("bcryptjs");
+const catchAsyncError = require('../middleware/catchAsyncError');
+const ErrorHandler = require('../utils/error');
 
-async function getMerchants(req, res) {
-  const merchants = await Merchant.find({}, '-__v -createdAt -updatedAt');
-  res.status(200).send(merchants);
-}
 
-async function getMerchant(req, res) {
-  const { id } = req.params
-  const merchant = await Merchant.findOne({ _id: id }, '-__v -createdAt -updatedAt');
-  const items = await MerchantItem.find({ merchantId: merchant._id }, '-__v -createdAt -updatedAt');
-  const groups = await ItemGroup.find({ merchantId: merchant._id }, '-__v -createdAt -updatedAt');
-  const itemGroups = []
+exports.registerMerchant = catchAsyncError( async(req,res,next)=>{
+  const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    const merchant = new Merchant({
+        ...req.body, password:hash
+    })
+    await merchant.save();
+    sendMerchantToken(merchant, 201,res);
+  
+})
 
-  for (let i = 0; i < groups.length; ++i) {
-    const group = {
-      _id: groups[i]._id,
-      name: groups[i].name,
-      items: []
-    }
-    for (let j = 0; j < groups[i].itemIds.length; ++j) {
-      for (let k = 0; k < items.length; ++k) {
-        if (items[k]._id.equals(groups[i].itemIds[j])) {
-          group.items.push(items[k])
+exports.signinMerchant = catchAsyncError( async(req,res,next)=>{
+
+     const { password, email } = req.body;
+
+
+        if (!email || !password) {
+            return next(new ErrorHandler("Please Enter Email & Password", 400));
         }
-      }
-    }
-    itemGroups.push(group)
-  }
 
-  merchant._doc.itemGroups = itemGroups
+        const merchant = await Merchant.findOne({ email }).select("+password");
 
-  res.status(200).send(merchant);
-}
+        if (!merchant) {
+            return next(new ErrorHandler("Invalid email or password", 401));
+        }
+
+        const isCorrect = await bcrypt.compare(password, merchant.password);
+        if (!isCorrect) return next(new ErrorHandler("Password does not match", 400));
 
 
-module.exports = {
-  getMerchants,
-  getMerchant
-}
+
+        sendMerchantToken(merchant, 200, res);
+
+
+
+})
+
+
+
