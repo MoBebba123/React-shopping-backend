@@ -157,7 +157,6 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
       }
     },
     { new: true, multi: true },
-
   )
   const itemSingleChoice = await SingleChoiceItemStep.findById({ _id: stepId })
   await itemSingleChoice.remove();
