@@ -44,7 +44,7 @@ const singleChoiceItemStepSchema = new Schema({
 const itemGroupSchema = new Schema({
   merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'Merchant' },
   name: { type: String, required: true },
-  itemIds: [Schema.Types.ObjectId],
+  itemIds: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
 });
 
 
@@ -55,7 +55,7 @@ const merchantItemSchema = new Schema({
   price: { type: Number, required: true },
   calories: { type: Number, default: 0 },
   description: { type: String, required: true },
-  singleSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Single_choice_item_step" , },
+  singleSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Single_choice_item_step", },
   multiSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Multi_choice_item_step", },
 }, { timestamps: true });
 

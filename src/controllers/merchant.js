@@ -153,7 +153,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
     { _id: itemId },
     {
       $pull: {
-        steps: stepId
+        singleSteps: stepId
       }
     },
     { new: true, multi: true },
