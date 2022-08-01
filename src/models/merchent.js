@@ -41,23 +41,47 @@ const singleChoiceItemStepSchema = new Schema({
 });
 
 
-const itemGroupSchema = new Schema({
-  merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'Merchant' },
-  name: { type: String, required: true },
-  itemIds: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
-});
-
-
 const merchantItemSchema = new Schema({
   merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'Merchant' },
+  categoryId: { type: Schema.Types.ObjectId, ref: 'Item_caregory', index: true },
   name: { type: String, required: true },
   photo: { type: String, required: true },
   price: { type: Number, required: true },
   calories: { type: Number, default: 0 },
   description: { type: String, required: true },
-  singleSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Single_choice_item_step", },
-  multiSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Multi_choice_item_step", },
-}, { timestamps: true });
+  steps: { type: [Schema.Types.ObjectId], default: [] },
+  // docModel: {
+  //   type: String,
+  //   required: true,
+  //   default: "Single_choice_item_step",
+  //   enum: ['Single_choice_item_step', 'Multi_choice_item_step']
+  // },
+  // singleSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Single_choice_item_step" },
+  // multiSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Multi_choice_item_step" },
+}, {
+  timestamps: true,
+  toJSON: { virtuals: true }
+},
+);
+merchantItemSchema.virtual('singleChoice', {
+  ref: 'Single_choice_item_step',
+  localField: 'steps', 
+  foreignField: '_id', 
+ 
+});
+
+merchantItemSchema.virtual('multiChoice', {
+  ref: 'Multi_choice_item_step',
+  localField: 'steps',
+  foreignField: '_id',
+});
+
+const categorySchema = new Schema({
+  merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'merchant' },
+  name: { type: String, required: true },
+ // itemIds: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
+
+});
 
 
 const merchantSchema = new Schema({
@@ -104,10 +128,8 @@ merchantSchema.methods.getJWTToken = function () {
 };
 
 
-
-
 const Merchant = mongoose.model('Merchant', merchantSchema);
-const ItemGroup = mongoose.model('Item_group', itemGroupSchema);
+const ItemCategory = mongoose.model('Item_caregory', categorySchema);
 const MultiChoiceItemStep = mongoose.model('Multi_choice_item_step', multiChoiceItemStepSchema);
 const SingleChoiceItemStep = mongoose.model('Single_choice_item_step', singleChoiceItemStepSchema);
 const StepOption = mongoose.model('Step_option', stepOptionSchema);
@@ -116,7 +138,7 @@ const MerchantItem = mongoose.model('Merchant_item', merchantItemSchema);
 
 module.exports = {
   Merchant,
-  ItemGroup,
+  ItemCategory,
   MerchantItem,
   StepOption,
   MultiChoiceItemStep,

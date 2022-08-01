@@ -100,27 +100,14 @@ exports.createMerchantItem = catchAsyncError(async (req, res, next) => {
   })
 })
 
-exports.createSingleChoise = catchAsyncError(async (req, res, next) => {
 
-  const merchantItem = await MerchantItem.findById(req.params.id)
-  const singleChoises = new SingleChoiceItemStep(req.body)
-
-  merchantItem.steps.push(singleChoises)
-
-  await merchantItem.save();
-  await singleChoises.save();
-  res.status(201).json({
-    merchantItem,
-    singleChoises
-  })
-})
 exports.createSingleChoiseOptions = catchAsyncError(async (req, res, next) => {
 
   const merchantItem = await MerchantItem.findById(req.params.id)
 
   const singleChoises = new SingleChoiceItemStep(req.body)
 
-  merchantItem.singleSteps.push(singleChoises);
+  merchantItem.steps.push(singleChoises);
 
   await singleChoises.save();
   await merchantItem.save();
@@ -135,7 +122,7 @@ exports.createMultiChoiseOptions = catchAsyncError(async (req, res, next) => {
 
   const multiChoice = new MultiChoiceItemStep(req.body)
 
-  merchantItem.multiSteps.push(multiChoice);
+  merchantItem.steps.push(multiChoice);
 
   await multiChoice.save();
   await merchantItem.save();
@@ -153,7 +140,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
     { _id: itemId },
     {
       $pull: {
-        singleSteps: stepId
+        steps: stepId
       }
     },
     { new: true, multi: true },
@@ -172,9 +159,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
 exports.getItem = catchAsyncError(async (req, res, next) => {
   const itemId = req.params.itemId
 
-  const merchantItem = await MerchantItem.findOne({ _id: itemId }).populate(
-    "singleSteps multiSteps",
-  )
+  const merchantItem = await MerchantItem.findOne({ _id: itemId }).populate("singleChoice").populate("multiChoice")
   res.json({
     message: "done",
     merchantItem
