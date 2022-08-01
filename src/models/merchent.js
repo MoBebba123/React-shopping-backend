@@ -101,9 +101,6 @@ const merchantSchema = new Schema({
   latitude: { type: Number, required: true },
 }, { timestamps: true });
 
-
-
-
 // JWT TOKEN
 merchantSchema.methods.getJWTToken = function () {
   return jwt.sign(
@@ -123,10 +120,10 @@ merchantSchema.methods.getJWTToken = function () {
 
 
 const Merchant = mongoose.model('Merchant', merchantSchema);
-const ItemCategory = mongoose.model('Item_caregory', categorySchema);
+const ItemCategory = mongoose.model('caregory', categorySchema);
 const MultiChoice= mongoose.model('Multi_choice_item_step', multiChoiceItemStepSchema);
 const SingleChoice= mongoose.model('Single_choice_item_step', singleChoiceItemStepSchema);
-const Item = mongoose.model('Merchant_item', merchantItemSchema);
+const Item = mongoose.model('item', merchantItemSchema);
 
 
 module.exports = {
