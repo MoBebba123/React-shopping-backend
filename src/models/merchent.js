@@ -4,12 +4,6 @@ const jwt = require("jsonwebtoken")
 const Schema = mongoose.Schema;
 
 
-const stepOptionSchema = new Schema({
-  name: { type: String, required: true },
-  isFree: { type: Boolean, required: true },
-  price: { type: Number, default: 0.0 },
-});
-
 const multiChoiceItemStepSchema = new Schema({
   name: { type: String, required: true },
   type: { type: String, default: 'multi_choice', enum: ['multi_choice'], required: true },
@@ -43,7 +37,7 @@ const singleChoiceItemStepSchema = new Schema({
 
 const merchantItemSchema = new Schema({
   merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'Merchant' },
-  categoryId: { type: Schema.Types.ObjectId, ref: 'Item_caregory', index: true },
+  category: { type: String, required: true },
   name: { type: String, required: true },
   photo: { type: String, required: true },
   price: { type: Number, required: true },
@@ -79,7 +73,7 @@ merchantItemSchema.virtual('multiChoice', {
 const categorySchema = new Schema({
   merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'merchant' },
   name: { type: String, required: true },
- // itemIds: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
+  items: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
 
 });
 
@@ -130,18 +124,16 @@ merchantSchema.methods.getJWTToken = function () {
 
 const Merchant = mongoose.model('Merchant', merchantSchema);
 const ItemCategory = mongoose.model('Item_caregory', categorySchema);
-const MultiChoiceItemStep = mongoose.model('Multi_choice_item_step', multiChoiceItemStepSchema);
-const SingleChoiceItemStep = mongoose.model('Single_choice_item_step', singleChoiceItemStepSchema);
-const StepOption = mongoose.model('Step_option', stepOptionSchema);
-const MerchantItem = mongoose.model('Merchant_item', merchantItemSchema);
+const MultiChoice= mongoose.model('Multi_choice_item_step', multiChoiceItemStepSchema);
+const SingleChoice= mongoose.model('Single_choice_item_step', singleChoiceItemStepSchema);
+const Item = mongoose.model('Merchant_item', merchantItemSchema);
 
 
 module.exports = {
   Merchant,
   ItemCategory,
-  MerchantItem,
-  StepOption,
-  MultiChoiceItemStep,
-  SingleChoiceItemStep
+  Item,
+  MultiChoice,
+  SingleChoice
 };
 

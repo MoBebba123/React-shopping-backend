@@ -1,4 +1,4 @@
-const { Merchant, MerchantItem, StepOption, SingleChoiceItemStep, MultiChoiceItemStep } = require('../models/merchent');
+const { Merchant, Item, StepOption, SingleChoice, MultiChoice} = require('../models/merchent');
 const sendMerchantToken = require('../utils/merchantToken');
 const bcrypt = require("bcryptjs");
 const catchAsyncError = require('../middleware/catchAsyncError');
@@ -90,7 +90,7 @@ exports.getMerchants = catchAsyncError(async (req, res, next) => {
 exports.createMerchantItem = catchAsyncError(async (req, res, next) => {
 
 
-  const merchantItem = new MerchantItem({
+  const merchantItem = new Item({
     ...req.body, merchantId: req.merchant.id,
   })
   await merchantItem.save();
@@ -103,7 +103,7 @@ exports.createMerchantItem = catchAsyncError(async (req, res, next) => {
 
 exports.createSingleChoiseOptions = catchAsyncError(async (req, res, next) => {
 
-  const merchantItem = await MerchantItem.findById(req.params.id)
+  const merchantItem = await Item.findById(req.params.id)
 
   const singleChoises = new SingleChoiceItemStep(req.body)
 
@@ -118,9 +118,9 @@ exports.createSingleChoiseOptions = catchAsyncError(async (req, res, next) => {
 })
 exports.createMultiChoiseOptions = catchAsyncError(async (req, res, next) => {
 
-  const merchantItem = await MerchantItem.findById(req.params.id)
+  const merchantItem = await Item.findById(req.params.id)
 
-  const multiChoice = new MultiChoiceItemStep(req.body)
+  const multiChoice = new MultiChoice(req.body)
 
   merchantItem.steps.push(multiChoice);
 
@@ -136,7 +136,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
 
   const { itemId, stepId } = req.params
 
-  const merchantItem = await MerchantItem.findOneAndUpdate(
+  const merchantItem = await Item.findOneAndUpdate(
     { _id: itemId },
     {
       $pull: {
@@ -145,7 +145,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
     },
     { new: true, multi: true },
   )
-  const itemSingleChoice = await SingleChoiceItemStep.findById({ _id: stepId })
+  const itemSingleChoice = await SingleChoice.findById({ _id: stepId })
   await itemSingleChoice.remove();
 
 
@@ -159,7 +159,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
 exports.getItem = catchAsyncError(async (req, res, next) => {
   const itemId = req.params.itemId
 
-  const merchantItem = await MerchantItem.findOne({ _id: itemId }).populate("singleChoice").populate("multiChoice")
+  const merchantItem = await Item.findOne({ _id: itemId }).populate("singleChoice").populate("multiChoice")
   res.json({
     message: "done",
     merchantItem
