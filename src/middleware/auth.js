@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const ErrorHandler = require("../utils/error");
 const catchAsyncError = require("./catchAsyncError");
-const User =  require("../models/user")
+const User =  require("../models/user");
+const { Merchant } = require("../models/merchent");
 
 
 exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
@@ -12,6 +13,18 @@ exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
 
   const decodedData = jwt.verify(access_token, process.env.JWT_SECRET);
   req.user = await User.findById(decodedData.id);
+
+  next();
+  });
+  
+exports.isAuthenticatedMerchant = catchAsyncError(async (req, res, next) => {
+  const merchant_token = req.cookies.merchant_token;
+  if (!merchant_token) {
+    return next(new ErrorHandler("Please Login to access this resource", 401));
+  }
+
+  const decodedData = jwt.verify(merchant_token, process.env.JWT_SECRET);
+  req.merchant = await Merchant.findById(decodedData.id);
 
   next();
   });

@@ -35,7 +35,7 @@ const itemGroupSchema = new Schema({
 
 
 const merchantItemSchema = new Schema({
-    merchantId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'item', index: true },
+    merchantId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Merchant' },
     name: { type: String, required: true },
     photo: { type: String, required: true },
     price: { type: Number, required: true },
