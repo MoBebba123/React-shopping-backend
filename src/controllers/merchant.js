@@ -19,20 +19,21 @@ exports.registerMerchant = catchAsyncError(async (req, res, next) => {
     password: hash,
   });
   await merchant.save();
+
   sendMerchantToken(merchant, 201, res);
 
   const message = `thank you for registration ${merchant.owner}, we will contact you soon `;
-  await sendEmail({
-    email: merchant.email,
-    subject: "welcome",
-    message,
-  });
-  const adminMessage = `you got a new request from  ${merchant.email}`;
-  await sendEmail({
-    email: "admin@admin.com",
-    subject: "welcome",
-    message: adminMessage,
-  });
+  // await sendEmail({
+  //   email: merchant.email,
+  //   subject: "welcome",
+  //   message,
+  // });
+  // const adminMessage = `you got a new request from  ${merchant.email}`;
+  // await sendEmail({
+  //   email: "admin@admin.com",
+  //   subject: "welcome",
+  //   message: adminMessage,
+  // });
 });
 
 exports.signinMerchant = catchAsyncError(async (req, res, next) => {
@@ -77,7 +78,7 @@ exports.getAllMerchants = catchAsyncError(async (req, res, next) => {
 });
 // USERS
 exports.getMerchants = catchAsyncError(async (req, res, next) => {
-  const pageSize = 8;
+  const pageSize = 2;
   const page = Number(req.query.pageNumber) || 1;
   const name = req.query.name || "";
   const category = req.query.category || "";
@@ -103,7 +104,6 @@ exports.getMerchants = catchAsyncError(async (req, res, next) => {
   });
 
   const merchants = await Merchant.find({
-    isActive: true,
     ...nameFilter,
     ...ownerFilter,
     ...categoryFilter,
@@ -112,7 +112,6 @@ exports.getMerchants = catchAsyncError(async (req, res, next) => {
   })
     .skip(pageSize * (page - 1))
     .limit(pageSize);
-
   if (merchants) {
     res.status(200).json({
       success: true,
