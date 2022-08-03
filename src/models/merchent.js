@@ -71,7 +71,7 @@ merchantItemSchema.virtual('multiChoice', {
 });
 
 const categorySchema = new Schema({
-  merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'merchant' },
+  merchantId: { type: Schema.Types.ObjectId, required: true, ref: 'Merchant' },
   name: { type: String, required: true },
   items: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
 
@@ -120,10 +120,10 @@ merchantSchema.methods.getJWTToken = function () {
 
 
 const Merchant = mongoose.model('Merchant', merchantSchema);
-const ItemCategory = mongoose.model('caregory', categorySchema);
+const ItemCategory = mongoose.model('Caregory', categorySchema);
 const MultiChoice= mongoose.model('Multi_choice_item_step', multiChoiceItemStepSchema);
 const SingleChoice= mongoose.model('Single_choice_item_step', singleChoiceItemStepSchema);
-const Item = mongoose.model('item', merchantItemSchema);
+const Item = mongoose.model('Item', merchantItemSchema);
 
 
 module.exports = {

@@ -155,6 +155,8 @@ exports.updateUserProfile = catchAsyncError(async (req, res, next) => {
     if (file) {
         const myCloud = await cloudinary.v2.uploader.upload(file, {
             folder: "proimages",
+            scale:true,
+            crop: 160
         });
         if (user) {
             user.firstName = req.body.firstName || user.firstName;
