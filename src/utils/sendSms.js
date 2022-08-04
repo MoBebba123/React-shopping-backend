@@ -4,7 +4,7 @@ const client = require("twilio")(accountSid, authToken);
 const sendSms = async (options) => {
   await client.messages
     .create({
-      body: "This is the ship that made the Kessel Run in fourteen parsecs?",
+      body: options.message,
       from: process.env.VERIFIED_PHONE_SENDER,
       to: options.to,
     })
