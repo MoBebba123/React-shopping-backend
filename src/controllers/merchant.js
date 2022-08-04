@@ -10,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const ErrorHandler = require("../utils/error");
 const sendEmail = require("../utils/sendEmail");
+const sendSms = require("../utils/sendSms");
 
 exports.registerMerchant = catchAsyncError(async (req, res, next) => {
   const salt = bcrypt.genSaltSync(10);
@@ -21,8 +22,11 @@ exports.registerMerchant = catchAsyncError(async (req, res, next) => {
   await merchant.save();
 
   sendMerchantToken(merchant, 201, res);
+  sendSms({
+    to: merchant.phoneNumber,
+  });
 
-  const message = `thank you for registration ${merchant.owner}, we will contact you soon `;
+  //const message = `thank you for registration ${merchant.owner}, we will contact you soon `;
   // await sendEmail({
   //   email: merchant.email,
   //   subject: "welcome",
