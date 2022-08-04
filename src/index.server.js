@@ -1,41 +1,52 @@
 const bodyParser = require("body-parser");
-const express = require("express")
+const express = require("express");
 require("dotenv").config();
 const app = express();
-const database =  require("./database/database")
-const cookiesParser = require("cookie-parser")
+const database = require("./database/database");
+const cookiesParser = require("cookie-parser");
 const errorMiddleware = require("./middleware/error");
 const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
-const merchantRouter = require('./routes/merchant');
-const { Merchant, ItemGroup, MerchantItem, StepOption, MultiChoiceItemStep, SingleChoiceItemStep } = require('./models/merchent');
+const path = require("path");
+const merchantRouter = require("./routes/merchant");
+const cors = require("cors");
+const {
+  Merchant,
+  ItemGroup,
+  MerchantItem,
+  StepOption,
+  MultiChoiceItemStep,
+  SingleChoiceItemStep,
+} = require("./models/merchent");
 
-const userRoute = require("./routes/user")
+const userRoute = require("./routes/user");
 // connection database
 database();
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(fileUpload({ useTempFiles: true }))
+app.use(fileUpload({ useTempFiles: true }));
 app.use(express.json());
 app.use(cookiesParser());
-
+app.use(cors());
 // Routes
 app.use("/api", userRoute);
 app.use("/api", merchantRouter);
 
 cloudinary.config({
-    cloud_name: "dkyyqvbna",
-    api_key: "368228333932484",
-    api_secret: process.env.API_SECRET ,
-  });
-  
+  cloud_name: "dkyyqvbna",
+  api_key: "368228333932484",
+  api_secret: process.env.API_SECRET,
+});
 
-app.use(errorMiddleware)
-app.listen(process.env.PORT,()=>{
-    console.log(`server is running on Port ${process.env.PORT}`)
-})
+// app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
+// });
+app.use(errorMiddleware);
+app.listen(process.env.PORT, () => {
+  console.log(`server is running on Port ${process.env.PORT}`);
+});
 
 // const description = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'
 
@@ -43,7 +54,7 @@ app.listen(process.env.PORT,()=>{
 
 //   const merchant = await Merchant.findOne({name: 'German Doner Kebab'})
 //   console.log(merchant)
-  
+
 //   const item = await new MerchantItem({
 //       merchantId: merchant._id,
 //       name: 'GDK Box',
@@ -97,7 +108,6 @@ app.listen(process.env.PORT,()=>{
 
 // create()
 
-
 // const merchant =  new Merchant({
 //   name: 'German Doner Kebab',
 //   hero: 'https://just-eat-prod-eu-res.cloudinary.com/image/upload/c_fill,f_auto,q_auto,w_1200,h_630,d_uk:cuisines:turkish-9.jpg/v1/uk/restaurants/81159.jpg',
@@ -112,5 +122,3 @@ app.listen(process.env.PORT,()=>{
 // });
 
 // merchant.save()
-
-

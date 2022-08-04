@@ -15,6 +15,7 @@ exports.isAuthenticatedUser = catchAsyncError(async (req, res, next) => {
 
   next();
 });
+
 exports.isVerifiedAccount = catchAsyncError(async (req, res, next) => {
   if (req.user && req.user.isVerified) {
     next();
