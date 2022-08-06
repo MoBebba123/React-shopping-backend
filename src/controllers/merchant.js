@@ -252,16 +252,60 @@ exports.deleteMerchant = catchAsyncError(async (req, res, next) => {
 });
 
 exports.updateMerchant = catchAsyncError(async (req, res, next) => {
-  const merchant = await Merchant.findByIdAndDelete(req.params.merchantId);
-  if (merchant) {
-    res.json({
-      message: "merchant deleted",
-    });
-  } else {
-    res.status(404).json({
-      message: "merchant not found",
-    });
+  const merchant = await Merchant.findById(req.merchant.id);
+  const file = req.body.hero;
+  if (merchant.hero.public_id !== "" && file) {
+    const imageId = merchant.hero.public_id;
+
+    await cloudinary.v2.uploader.destroy(imageId);
   }
+
+  if (file) {
+    const myCloud = await cloudinary.v2.uploader.upload(file, {
+      folder: "proimages",
+      scale: true,
+      crop: 160,
+    });
+    if (merchant) {
+      merchant.name = req.body.name || merchant.name;
+      merchant.owner = req.body.owner || merchant.owner;
+      merchant.email = req.body.email || merchant.email;
+      merchant.cuisine = req.body.cuisine || merchant.cuisine;
+      merchant.phoneNumber = req.body.phoneNumber || merchant.phoneNumber;
+      merchant.deliveryFee = req.body.deliveryFee || merchant.deliveryFee;
+      merchant.city = req.body.city || merchant.city;
+      merchant.street = req.body.street || merchant.street;
+      merchant.country = req.body.country || merchant.country;
+      merchant.postcode = req.body.postcode || merchant.postcode;
+      merchant.longitude = req.body.longitude || merchant.longitude;
+      merchant.latitude = req.body.latitude || merchant.latitude;
+      merchant.hero.public_id = myCloud?.public_id || merchant.hero.public_id;
+      merchant.hero.url = myCloud?.secure_url || merchant.hero.url;
+    }
+  } else {
+    merchant.name = req.body.name || merchant.name;
+    merchant.owner = req.body.owner || merchant.owner;
+    merchant.email = req.body.email || merchant.email;
+    merchant.cuisine = req.body.cuisine || merchant.cuisine;
+    merchant.phoneNumber = req.body.phoneNumber || merchant.phoneNumber;
+    merchant.deliveryFee = req.body.deliveryFee || merchant.deliveryFee;
+    merchant.city = req.body.city || merchant.city;
+    merchant.street = req.body.street || merchant.street;
+    merchant.country = req.body.country || merchant.country;
+    merchant.postcode = req.body.postcode || merchant.postcode;
+    merchant.longitude = req.body.longitude || merchant.longitude;
+    merchant.latitude = req.body.latitude || merchant.latitude;
+    merchant.email = req.body.email || merchant.email;
+  }
+
+  await merchant.save({
+    validateBeforeSave: false,
+  });
+  res.status(200).json({
+    succuss: true,
+    message: "merchant Updated succussfully",
+    merchant,
+  });
 });
 // TODO
 // merchant Approval - reject -delete
