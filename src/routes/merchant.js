@@ -14,6 +14,7 @@ const {
   getItem,
   deleteMultiChoice,
   deleteMerchant,
+  updateMerchant,
 } = require("../controllers/merchant");
 const {
   isAuthenticatedUser,
@@ -35,6 +36,9 @@ merchantRouter
 merchantRouter.route("/merchants/category").get(getCategories);
 
 merchantRouter.route("/user/merchants").get(getMerchants);
+merchantRouter
+  .route("/merchant/update")
+  .get(isAuthenticatedMerchant, updateMerchant);
 merchantRouter
   .route("/merchants/createItem")
   .post(isAuthenticatedMerchant, createMerchantItem);
