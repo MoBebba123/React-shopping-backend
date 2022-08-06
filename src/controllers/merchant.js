@@ -186,6 +186,27 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
     merchantItem,
   });
 });
+exports.deleteMultiChoice = catchAsyncError(async (req, res, next) => {
+  const { itemId, stepId } = req.params;
+
+  const merchantItem = await Item.findOneAndUpdate(
+    { _id: itemId },
+    {
+      $pull: {
+        steps: stepId,
+      },
+    },
+    { new: true, multi: true }
+  );
+
+  const itemMultiChoice = await MultiChoice.findById({ _id: stepId });
+  await itemMultiChoice.remove();
+
+  res.json({
+    message: "done",
+    merchantItem,
+  });
+});
 
 exports.getItem = catchAsyncError(async (req, res, next) => {
   const itemId = req.params.itemId;
@@ -204,6 +225,19 @@ exports.getCategories = catchAsyncError(async (req, res, next) => {
   res.json({
     merchants,
   });
+});
+
+exports.deleteMerchant = catchAsyncError(async (req, res, next) => {
+  const merchant = await Merchant.findByIdAndDelete(req.params.merchantId);
+  if (merchant) {
+    res.json({
+      message: "merchant deleted",
+    });
+  } else {
+    res.status(404).json({
+      message: "merchant not found",
+    });
+  }
 });
 
 // TODO
