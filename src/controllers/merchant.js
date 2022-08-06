@@ -11,19 +11,30 @@ const catchAsyncError = require("../middleware/catchAsyncError");
 const ErrorHandler = require("../utils/error");
 const sendEmail = require("../utils/sendEmail");
 const sendSms = require("../utils/sendSms");
-
+const cloudinary = require("cloudinary");
 exports.registerMerchant = catchAsyncError(async (req, res, next) => {
+  const myCloud = await cloudinary.v2.uploader.upload(req.body.hero, {
+    folder: "avatars",
+    width: 150,
+    crop: "scale",
+  });
+
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(req.body.password, salt);
+
   const merchant = new Merchant({
     ...req.body,
     password: hash,
+    hero: {
+      public_id: myCloud ? myCloud.public_id : "sampleid",
+      url: myCloud ? myCloud.secure_url : "sampleurl",
+    },
   });
   await merchant.save();
-
   sendMerchantToken(merchant, 201, res);
   sendSms({
     to: merchant.phoneNumber,
+    message: "thank you for your registration",
   });
 
   //const message = `thank you for registration ${merchant.owner}, we will contact you soon `;
@@ -240,5 +251,17 @@ exports.deleteMerchant = catchAsyncError(async (req, res, next) => {
   }
 });
 
+exports.updateMerchant = catchAsyncError(async (req, res, next) => {
+  const merchant = await Merchant.findByIdAndDelete(req.params.merchantId);
+  if (merchant) {
+    res.json({
+      message: "merchant deleted",
+    });
+  } else {
+    res.status(404).json({
+      message: "merchant not found",
+    });
+  }
+});
 // TODO
 // merchant Approval - reject -delete

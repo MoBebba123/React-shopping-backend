@@ -48,14 +48,23 @@ const singleChoiceItemStepSchema = new Schema({
 
 const merchantItemSchema = new Schema(
   {
-    merchantId: {
+    merchant: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "Merchant",
     },
     category: { type: String, required: true },
     name: { type: String, required: true },
-    photo: { type: String, required: true },
+    photo: {
+      public_id: {
+        type: String,
+        default: "",
+      },
+      url: {
+        type: String,
+        default: "",
+      },
+    },
     price: { type: Number, required: true },
     calories: { type: Number, default: 0 },
     description: { type: String, required: true },
@@ -95,7 +104,16 @@ const categorySchema = new Schema({
 const merchantSchema = new Schema(
   {
     name: { type: String, required: true },
-    hero: { type: String, required: true },
+    hero: {
+      public_id: {
+        type: String,
+        default: "",
+      },
+      url: {
+        type: String,
+        default: "",
+      },
+    },
     owner: { type: String, required: true },
     category: { type: String, required: true },
     email: { type: String, required: true, unique: true },
