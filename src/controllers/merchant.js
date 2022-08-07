@@ -13,11 +13,11 @@ const sendEmail = require("../utils/sendEmail");
 const sendSms = require("../utils/sendSms");
 const cloudinary = require("cloudinary");
 exports.registerMerchant = catchAsyncError(async (req, res, next) => {
-  const myCloud = await cloudinary.v2.uploader.upload(req.body.hero, {
-    folder: "avatars",
-    width: 150,
-    crop: "scale",
-  });
+  // const myCloud = await cloudinary.v2.uploader.upload(req.body.hero, {
+  //   folder: "avatars",
+  //   width: 150,
+  //   crop: "scale",
+  // });
 
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(req.body.password, salt);
@@ -25,10 +25,10 @@ exports.registerMerchant = catchAsyncError(async (req, res, next) => {
   const merchant = new Merchant({
     ...req.body,
     password: hash,
-    hero: {
-      public_id: myCloud ? myCloud.public_id : "sampleid",
-      url: myCloud ? myCloud.secure_url : "sampleurl",
-    },
+    // hero: {
+    //   public_id: myCloud ? myCloud.public_id : "sampleid",
+    //   url: myCloud ? myCloud.secure_url : "sampleurl",
+    // },
   });
   await merchant.save();
   sendMerchantToken(merchant, 201, res);
@@ -138,6 +138,7 @@ exports.getMerchants = catchAsyncError(async (req, res, next) => {
 });
 
 exports.createMerchantItem = catchAsyncError(async (req, res, next) => {
+  // cloudinary later
   const merchantItem = new Item({
     ...req.body,
     merchantId: req.merchant.id,
@@ -309,3 +310,29 @@ exports.updateMerchant = catchAsyncError(async (req, res, next) => {
 });
 // TODO
 // merchant Approval - reject -delete
+
+exports.approveMerchant = catchAsyncError(async (req, res, next) => {
+  const merchantId = req.params.merchantId;
+  const query = { _id: merchantId };
+  const update = {
+    status: "approved",
+    isActive: true,
+  };
+  const merchant = await Merchant.findOneAndUpdate(query, update, {
+    new: true,
+    useFindAndModify: true,
+  });
+  if (!merchant) return next(new ErrorHandler("merchant not found", 404));
+
+  const message = `congratulations ${merchant.owner} you have been accepted to sell on tawwan eats`;
+  await sendEmail({
+    email: merchant.email,
+    subject: `Seller request Approved`,
+    message: message,
+  });
+  res.status(200).json({
+    success: true,
+    message: "merchant approved",
+    merchant,
+  });
+});

@@ -15,6 +15,7 @@ const {
   deleteMultiChoice,
   deleteMerchant,
   updateMerchant,
+  approveMerchant,
 } = require("../controllers/merchant");
 const {
   isAuthenticatedUser,
@@ -57,5 +58,8 @@ merchantRouter
 merchantRouter
   .route("/merchant/item/:itemId")
   .get(isAuthenticatedMerchant, getItem);
+merchantRouter
+  .route("/merchant/approve/:merchantId")
+  .put(isAuthenticatedUser, isAdmin, approveMerchant);
 
 module.exports = merchantRouter;
