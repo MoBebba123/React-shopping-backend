@@ -313,7 +313,6 @@ exports.approveOrRejectMerchant = catchAsyncError(async (req, res, next) => {
   const query = { _id: merchantId };
 
   const decision = req.path.split("/")[2];
-  console.log(decision);
   let update = {
     status: decision === "reject" ? "rejected" : "approved",
     isActive: decision === "reject" ? false : true,
