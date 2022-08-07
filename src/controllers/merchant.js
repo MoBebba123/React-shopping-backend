@@ -140,13 +140,53 @@ exports.createMerchantItem = catchAsyncError(async (req, res, next) => {
   // cloudinary later
   const merchantItem = new Item({
     ...req.body,
-    merchantId: req.merchant.id,
+    merchant: req.merchant.id,
   });
   await merchantItem.save();
   res.status(202).json({
     success: true,
     merchantItem,
   });
+});
+exports.updateMerchantItem = catchAsyncError(async (req, res, next) => {
+  if (req.file) {
+    const myCloud = await cloudinary.v2.uploader.upload(req.body.hero, {
+      folder: "hero",
+      width: 150,
+      crop: "scale",
+    });
+    const merchantItem = await Item.findByIdAndUpdate(
+      req.params.itemId,
+      {
+        $set: {
+          ...req.body,
+          "hero.public_id": myCloud.public_id,
+          "hero.url": myCloud.secure_url,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(202).json({
+      success: true,
+      merchantItem,
+    });
+  } else {
+    const merchantItem = await Item.findByIdAndUpdate(
+      req.params.itemId,
+      {
+        $set: req.body,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(202).json({
+      success: true,
+      merchantItem,
+    });
+  }
 });
 
 exports.createSingleChoiseOptions = catchAsyncError(async (req, res, next) => {
