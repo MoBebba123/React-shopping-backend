@@ -308,8 +308,6 @@ exports.updateMerchant = catchAsyncError(async (req, res, next) => {
     merchant,
   });
 });
-// TODO
-// merchant Approval - reject -delete
 
 exports.approveMerchant = catchAsyncError(async (req, res, next) => {
   const merchantId = req.params.merchantId;
