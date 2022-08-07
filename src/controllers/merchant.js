@@ -186,7 +186,7 @@ exports.deleteSingleChoice = catchAsyncError(async (req, res, next) => {
         steps: stepId,
       },
     },
-    { new: true, multi: true }
+    { new: true }
   );
 
   const itemSingleChoice = await SingleChoice.findById({ _id: stepId });
@@ -207,7 +207,7 @@ exports.deleteMultiChoice = catchAsyncError(async (req, res, next) => {
         steps: stepId,
       },
     },
-    { new: true, multi: true }
+    { new: true }
   );
 
   const itemMultiChoice = await MultiChoice.findById({ _id: stepId });
