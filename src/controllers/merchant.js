@@ -324,7 +324,10 @@ exports.approveOrRejectMerchant = catchAsyncError(async (req, res, next) => {
   });
   if (!merchant) return next(new ErrorHandler("merchant not found", 404));
 
-  const message = `congratulations ${merchant.owner} you have been accepted to sell on tawwan eats`;
+  const message =
+    decision === "reject"
+      ? `hello ${merchant.owner} sorry to inform you that your application has been rejected `
+      : `congratulations ${merchant.owner} you have been accepted to sell on tawwan eats`;
   await sendEmail({
     email: merchant.email,
     subject: `Seller request Approved`,
