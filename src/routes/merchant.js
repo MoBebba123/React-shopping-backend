@@ -8,7 +8,6 @@ const {
   createMerchantItem,
   createMultiChoiseOptions,
   logoutMerchant,
-  createSingleChoise,
   createSingleChoiseOptions,
   deleteSingleChoice,
   getItem,

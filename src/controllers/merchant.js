@@ -1,7 +1,6 @@
 const {
   Merchant,
   Item,
-  StepOption,
   SingleChoice,
   MultiChoice,
 } = require("../models/merchent");
