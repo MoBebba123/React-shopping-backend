@@ -336,3 +336,28 @@ exports.approveMerchant = catchAsyncError(async (req, res, next) => {
     merchant,
   });
 });
+
+exports.rejectMerchant = catchAsyncError(async (req, res, next) => {
+  const merchantId = req.params.merchantId;
+  const query = { _id: merchantId };
+  const update = {
+    status: "rejected",
+  };
+  const merchant = await Merchant.findOneAndUpdate(query, update, {
+    new: true,
+    useFindAndModify: true,
+  });
+  if (!merchant) return next(new ErrorHandler("merchant not found", 404));
+
+  const message = `hello ${merchant.owner} we are soryy to inform you that your application has been rejected`;
+  await sendEmail({
+    email: merchant.email,
+    subject: `Seller request rejected`,
+    message: message,
+  });
+  res.status(200).json({
+    success: true,
+    message: "merchant approved",
+    merchant,
+  });
+});

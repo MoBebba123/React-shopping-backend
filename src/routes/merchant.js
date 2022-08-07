@@ -16,6 +16,7 @@ const {
   deleteMerchant,
   updateMerchant,
   approveMerchant,
+  rejectMerchant,
 } = require("../controllers/merchant");
 const {
   isAuthenticatedUser,
@@ -61,5 +62,8 @@ merchantRouter
 merchantRouter
   .route("/merchant/approve/:merchantId")
   .put(isAuthenticatedUser, isAdmin, approveMerchant);
+merchantRouter
+  .route("/merchant/reject/:merchantId")
+  .put(isAuthenticatedUser, isAdmin, rejectMerchant);
 
 module.exports = merchantRouter;
