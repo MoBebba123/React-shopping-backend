@@ -66,6 +66,6 @@ merchantRouter
   .put(isAuthenticatedUser, isAdmin, approveOrRejectMerchant);
 merchantRouter
   .route("/merchantItem/update/:itemId")
-  .put(isAuthenticatedMerchant, isAdmin, updateMerchantItem);
+  .put(isAuthenticatedMerchant, updateMerchantItem);
 
 module.exports = merchantRouter;
