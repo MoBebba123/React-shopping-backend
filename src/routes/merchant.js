@@ -14,8 +14,6 @@ const {
   deleteMultiChoice,
   deleteMerchant,
   updateMerchant,
-  approveMerchant,
-  rejectMerchant,
   approveOrRejectMerchant,
   updateMerchantItem,
 } = require("../controllers/merchant");
@@ -41,7 +39,7 @@ merchantRouter.route("/merchants/category").get(getCategories);
 merchantRouter.route("/user/merchants").get(getMerchants);
 merchantRouter
   .route("/merchant/update")
-  .get(isAuthenticatedMerchant, updateMerchant);
+  .put(isAuthenticatedMerchant, updateMerchant);
 merchantRouter
   .route("/merchants/createItem")
   .post(isAuthenticatedMerchant, createMerchantItem);
@@ -68,6 +66,6 @@ merchantRouter
   .put(isAuthenticatedUser, isAdmin, approveOrRejectMerchant);
 merchantRouter
   .route("/merchantItem/update/:itemId")
-  .put(isAuthenticatedMerchant, updateMerchantItem);
+  .put(isAuthenticatedMerchant, isAdmin, updateMerchantItem);
 
 module.exports = merchantRouter;
