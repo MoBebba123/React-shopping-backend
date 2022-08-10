@@ -379,3 +379,17 @@ exports.approveOrRejectMerchant = catchAsyncError(async (req, res, next) => {
     merchant,
   });
 });
+exports.getMerchantItems = catchAsyncError(async (req, res, next) => {
+  const merchantId = req.params.merchantId;
+  const query = { merchant: merchantId };
+  Item.find(query).exec((err, items) => {
+    if (err) return next(new ErrorHandler("merchant not found", 404));
+    if (items) {
+      res.status(200).json({
+        success: true,
+        message: "get items",
+        items,
+      });
+    }
+  });
+});
