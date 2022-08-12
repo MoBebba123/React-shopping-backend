@@ -5,18 +5,10 @@ const {
   getAllMerchants,
   getCategories,
   getMerchants,
-  createMerchantItem,
-  createMultiChoiseOptions,
   logoutMerchant,
-  createSingleChoiseOptions,
-  deleteSingleChoice,
-  getItem,
-  deleteMultiChoice,
   deleteMerchant,
   updateMerchant,
   approveOrRejectMerchant,
-  updateMerchantItem,
-  getMerchantItems,
 } = require("../controllers/merchant");
 const {
   isAuthenticatedUser,
@@ -41,33 +33,11 @@ merchantRouter.route("/user/merchants").get(getMerchants);
 merchantRouter
   .route("/merchant/update")
   .put(isAuthenticatedMerchant, updateMerchant);
-merchantRouter
-  .route("/merchants/createItem")
-  .post(isAuthenticatedMerchant, createMerchantItem);
-merchantRouter
-  .route("/merchants/createItem/singlechoise/:id")
-  .post(isAuthenticatedMerchant, createSingleChoiseOptions);
-merchantRouter
-  .route("/merchants/createItem/multichoise/:id")
-  .post(isAuthenticatedMerchant, createMultiChoiseOptions);
-merchantRouter
-  .route("/merchant/removeSinglechoice/:itemId/:stepId")
-  .put(isAuthenticatedMerchant, deleteSingleChoice);
-merchantRouter
-  .route("/merchant/removeMultichoice/:itemId/:stepId")
-  .put(isAuthenticatedMerchant, deleteMultiChoice);
-merchantRouter
-  .route("/merchant/item/:itemId")
-  .get(isAuthenticatedMerchant, getItem);
+
 merchantRouter
   .route("/merchant/approve/:merchantId")
   .put(isAuthenticatedUser, isAdmin, approveOrRejectMerchant);
 merchantRouter
   .route("/merchant/reject/:merchantId")
   .put(isAuthenticatedUser, isAdmin, approveOrRejectMerchant);
-merchantRouter
-  .route("/merchantItem/update/:itemId")
-  .put(isAuthenticatedMerchant, updateMerchantItem);
-merchantRouter.route("/merchantItems/:merchantId").get(getMerchantItems);
-
 module.exports = merchantRouter;
