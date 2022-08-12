@@ -9,14 +9,7 @@ const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
 const path = require("path");
 const cors = require("cors");
-const {
-  Merchant,
-  ItemGroup,
-  MerchantItem,
-  StepOption,
-  MultiChoiceItemStep,
-  SingleChoiceItemStep,
-} = require("./models/merchent");
+
 // Routes
 const userRoute = require("./routes/user");
 const merchantRouter = require("./routes/merchant");
