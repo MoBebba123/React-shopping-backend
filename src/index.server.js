@@ -8,7 +8,6 @@ const errorMiddleware = require("./middleware/error");
 const cloudinary = require("cloudinary").v2;
 const fileUpload = require("express-fileupload");
 const path = require("path");
-const merchantRouter = require("./routes/merchant");
 const cors = require("cors");
 const {
   Merchant,
@@ -18,8 +17,10 @@ const {
   MultiChoiceItemStep,
   SingleChoiceItemStep,
 } = require("./models/merchent");
-
+// Routes
 const userRoute = require("./routes/user");
+const merchantRouter = require("./routes/merchant");
+const itemRouter = require("./routes/merchantItem");
 // connection database
 database();
 
@@ -31,7 +32,7 @@ app.use(cors());
 // Routes
 app.use("/api", userRoute);
 app.use("/api", merchantRouter);
-
+app.use("/api", itemRouter);
 cloudinary.config({
   cloud_name: "dkyyqvbna",
   api_key: "368228333932484",
