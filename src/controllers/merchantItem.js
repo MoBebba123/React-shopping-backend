@@ -1,5 +1,5 @@
 const { Item, SingleChoice, MultiChoice } = require("../models/merchnatItem");
-const { Merchant } = require("../models/merchent");
+const { Merchant } = require("../models/merchant");
 const catchAsyncError = require("../middleware/catchAsyncError");
 const ErrorHandler = require("../utils/error");
 const sendEmail = require("../utils/sendEmail");

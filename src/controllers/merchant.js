@@ -3,7 +3,7 @@ const {
   Item,
   SingleChoice,
   MultiChoice,
-} = require("../models/merchent");
+} = require("../models/merchant");
 const sendMerchantToken = require("../utils/merchantToken");
 const bcrypt = require("bcryptjs");
 const catchAsyncError = require("../middleware/catchAsyncError");

@@ -94,13 +94,6 @@ merchantItemSchema.virtual("multiChoice", {
   foreignField: "_id",
 });
 
-const categorySchema = new Schema({
-  merchant: { type: Schema.Types.ObjectId, required: true, ref: "Merchant" },
-  name: { type: String, required: true },
-  items: { type: [Schema.Types.ObjectId], default: [], ref: "Merchant_item" },
-});
-
-const ItemCategory = mongoose.model("Caregory", categorySchema);
 const MultiChoice = mongoose.model(
   "Multi_choice_item_step",
   multiChoiceItemStepSchema

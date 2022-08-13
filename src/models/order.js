@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  customer: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  merchant: { type: mongoose.Schema.Types.ObjectID, ref: "User" },
   orderItems: [
     {
       item: { type: Schema.Types.ObjectId, ref: "Item", required: true },
@@ -24,6 +25,7 @@ const orderSchema = new Schema({
   taxPrice: { type: Number, required: true, default: 0 },
   subTotal: { type: Number, required: true },
   totalPrice: { type: Number, required: true },
+  paymentMethod: { type: String, required: true },
   paymentInfo: {
     id: { type: String, required: true },
     status: { type: String, required: true },

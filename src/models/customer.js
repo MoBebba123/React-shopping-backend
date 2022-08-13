@@ -4,20 +4,8 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-      min: 3,
-      max: 20,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-      min: 3,
-      max: 20,
-    },
+    firstName: { type: String, required: true, trim: true, min: 3, max: 20 },
+    lastName: { type: String, required: true, trim: true, min: 3, max: 20 },
     username: {
       type: String,
       required: true,
@@ -33,19 +21,9 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
     },
-    password: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
+    password: { type: String, required: true },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+    isVerified: { type: Boolean, default: false },
     avatar: {
       public_id: {
         type: String,
@@ -77,9 +55,9 @@ userSchema.methods.getJWTToken = function () {
       id: this._id,
       firstName: this.firstName,
       lastName: this.lastName,
+      fullName: this.fullName,
       email: this.email,
       role: this.role,
-      fullName: this.fullName,
     },
     process.env.JWT_SECRET,
     {
