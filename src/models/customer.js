@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema(
+const customerSchema = new Schema(
   {
     firstName: { type: String, required: true, trim: true, min: 3, max: 20 },
     lastName: { type: String, required: true, trim: true, min: 3, max: 20 },
@@ -44,12 +44,12 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
-userSchema.virtual("fullName").get(function () {
+customerSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
 // JWT TOKEN
-userSchema.methods.getJWTToken = function () {
+customerSchema.methods.getJWTToken = function () {
   return jwt.sign(
     {
       id: this._id,
@@ -66,11 +66,11 @@ userSchema.methods.getJWTToken = function () {
   );
 };
 // Generating Password Reset Token
-userSchema.methods.getResetPasswordToken = function () {
+customerSchema.methods.getResetPasswordToken = function () {
   // Generating Token
   const resetToken = crypto.randomBytes(20).toString("hex");
 
-  // Hashing and adding resetPasswordToken to userSchema
+  // Hashing and adding resetPasswordToken to customerSchema
   this.resetPasswordToken = crypto
     .createHash("sha256")
     .update(resetToken)
@@ -81,4 +81,4 @@ userSchema.methods.getResetPasswordToken = function () {
   return resetToken;
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Customer", customerSchema);
