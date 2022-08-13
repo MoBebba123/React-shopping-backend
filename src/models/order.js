@@ -27,6 +27,9 @@ const orderSchema = new Schema({
     status: { type: String, required: true },
   },
   paidAt: { type: Date, required: true },
+  orderStatus: { type: String, required: true, default: "Processing" },
+  createdAt: { type: Date, default: Date.now },
+  deliveredAt: Date,
 });
 
 module.exports = mongoose.model("Order", orderSchema);
