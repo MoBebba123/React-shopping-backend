@@ -7,11 +7,13 @@ const orderSchema = new Schema({
   orderItems: [
     {
       item: { type: Schema.Types.ObjectId, ref: "Item", required: true },
+      price: { type: Number, required: true },
       quantity: { type: Number, required: true, default: 1 },
     },
   ],
   shippingInfo: {
-    street: { type: String, required: true },
+    fullName: { type: String, required: true },
+    address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
     country: { type: String, required: true },
