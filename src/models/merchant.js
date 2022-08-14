@@ -34,7 +34,7 @@ const merchantSchema = new Schema(
     postcode: { type: String, required: true },
     longitude: { type: Number, required: true },
     latitude: { type: Number, required: true },
-
+    maxDeliveryDistance: { type: Number, required: true },
     otp: Number,
     otp_expiry: Date,
   },
