@@ -21,7 +21,7 @@ const orderSchema = new Schema({
     pinCode: { type: String, required: true },
     phoneNo: { type: Number, required: true },
   },
-  shipingPrice: { type: Number, required: true, default: 0 },
+  shippingPrice: { type: Number, required: true, default: 0 },
   taxPrice: { type: Number, required: true, default: 0 },
   subTotal: { type: Number, required: true },
   totalPrice: { type: Number, required: true },
