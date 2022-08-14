@@ -10,10 +10,11 @@ const fileUpload = require("express-fileupload");
 const path = require("path");
 const cors = require("cors");
 
-// Routes
+// Routes imports
 const userRoute = require("./routes/user");
 const merchantRouter = require("./routes/merchant");
 const itemRouter = require("./routes/merchantItem");
+const category = require("./routes/itemCategory");
 // connection database
 database();
 
@@ -26,6 +27,7 @@ app.use(cors());
 app.use("/api", userRoute);
 app.use("/api", merchantRouter);
 app.use("/api", itemRouter);
+app.use("/api", category);
 cloudinary.config({
   cloud_name: "dkyyqvbna",
   api_key: "368228333932484",
@@ -37,7 +39,7 @@ cloudinary.config({
 // app.get("*", (req, res) => {
 //   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 // });
-app.use(errorMiddleware);
+//app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log(`server is running on Port ${process.env.PORT}`);
 });

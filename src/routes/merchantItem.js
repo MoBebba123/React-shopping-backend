@@ -14,7 +14,7 @@ const { isAuthenticatedMerchant } = require("../middleware/auth");
 const router = express.Router();
 
 router
-  .route("/merchants/createItem")
+  .route("/merchant/createItem")
   .post(isAuthenticatedMerchant, createMerchantItem);
 router
   .route("/merchants/createItem/singlechoise/:id")
