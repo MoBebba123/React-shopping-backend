@@ -15,6 +15,7 @@ const userRoute = require("./routes/user");
 const merchantRouter = require("./routes/merchant");
 const itemRouter = require("./routes/merchantItem");
 const category = require("./routes/itemCategory");
+
 // connection database
 database();
 
@@ -23,6 +24,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(express.json());
 app.use(cookiesParser());
 app.use(cors());
+
 // Routes
 app.use("/api", userRoute);
 app.use("/api", merchantRouter);
@@ -41,6 +43,7 @@ cloudinary.config({
 //   res.sendFile(path.resolve(__dirname, "../frontend/build/index.html"));
 // });
 //app.use(errorMiddleware);
+
 app.listen(process.env.PORT, () => {
   console.log(`server is running on Port ${process.env.PORT}`);
 });
