@@ -28,6 +28,7 @@ app.use("/api", userRoute);
 app.use("/api", merchantRouter);
 app.use("/api", itemRouter);
 app.use("/api", category);
+
 cloudinary.config({
   cloud_name: "dkyyqvbna",
   api_key: "368228333932484",
