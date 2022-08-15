@@ -14,3 +14,5 @@ exports.createCategory = catchAsyncError(async (req, res, next) => {
     category,
   });
 });
+
+exports.updateCategory = catchAsyncError(async (req, res, next) => {});
