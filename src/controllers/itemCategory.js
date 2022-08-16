@@ -16,7 +16,7 @@ exports.createCategory = catchAsyncError(async (req, res, next) => {
 exports.findCategory = catchAsyncError(async (req, res, next) => {
   const merchantId = req.params.merchantId;
   const query = { merchant: merchantId };
-  const merchantCategory = await Category.find(query);
+  const merchantCategory = await Category.find(query).populate("items");
   res.status(200).json({
     success: true,
     message: "successfull",
