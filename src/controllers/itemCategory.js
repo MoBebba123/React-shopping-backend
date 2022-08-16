@@ -13,5 +13,17 @@ exports.createCategory = catchAsyncError(async (req, res, next) => {
     category,
   });
 });
-
-exports.updateCategory = catchAsyncError(async (req, res, next) => {});
+exports.findCategory = catchAsyncError(async (req, res, next) => {
+  const merchantId = req.params.merchantId;
+  const query = { merchant: merchantId };
+  const merchantCategory = await Category.find(query);
+  res.status(200).json({
+    success: true,
+    message: "successfull",
+    merchantCategory,
+  });
+});
+exports.updateCategory = catchAsyncError(async (req, res, next) => {
+  const CategoryId = req.params.CategoryId;
+  const category = Category.findById(CategoryId);
+});
