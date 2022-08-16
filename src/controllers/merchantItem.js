@@ -30,14 +30,18 @@ exports.updateMerchantItem = catchAsyncError(async (req, res, next) => {
       {
         $set: {
           ...req.body,
-          "hero.public_id": myCloud.public_id,
-          "hero.url": myCloud.secure_url,
+          "hero.$.public_id": myCloud.public_id,
+          "hero.$.url": myCloud.secure_url,
         },
       },
       {
         new: true,
       }
     );
+    res.status(202).json({
+      success: true,
+      merchantItem,
+    });
   } else {
     const merchantItem = await Item.findByIdAndUpdate(
       req.params.itemId,
@@ -48,11 +52,11 @@ exports.updateMerchantItem = catchAsyncError(async (req, res, next) => {
         new: true,
       }
     );
+    res.status(202).json({
+      success: true,
+      merchantItem,
+    });
   }
-  res.status(202).json({
-    success: true,
-    merchantItem,
-  });
 });
 
 exports.createSingleChoiseOptions = catchAsyncError(async (req, res, next) => {
