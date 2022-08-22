@@ -8,6 +8,7 @@ const {
   deleteMultiChoice,
   updateMerchantItem,
   getMerchantItems,
+  getItemV2,
 } = require("../controllers/merchantItem");
 const { isAuthenticatedMerchant } = require("../middleware/auth");
 
@@ -34,5 +35,6 @@ router
   .route("/merchantItem/update/:itemId")
   .put(isAuthenticatedMerchant, updateMerchantItem);
 router.route("/merchantItems/:merchantId").get(getMerchantItems);
+router.route("/v2/:merchantId").get(getItemV2);
 
 module.exports = router;

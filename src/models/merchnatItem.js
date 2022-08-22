@@ -68,12 +68,14 @@ const merchantItemSchema = new Schema(
     calories: { type: Number, default: 0 },
     description: { type: String, required: true },
     steps: { type: [Schema.Types.ObjectId], default: [] },
+
     // docModel: {
     //   type: String,
     //   required: true,
     //   default: "Single_choice_item_step",
     //   enum: ['Single_choice_item_step', 'Multi_choice_item_step']
     // },
+
     // singleSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Single_choice_item_step" },
     // multiSteps: { type: [Schema.Types.ObjectId], default: [], ref: "Multi_choice_item_step" },
   },
@@ -82,6 +84,7 @@ const merchantItemSchema = new Schema(
     toJSON: { virtuals: true },
   }
 );
+
 merchantItemSchema.virtual("singleChoice", {
   ref: "Single_choice_item_step",
   localField: "steps",

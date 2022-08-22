@@ -11,6 +11,7 @@ const ErrorHandler = require("../utils/error");
 const sendEmail = require("../utils/sendEmail");
 const sendSms = require("../utils/sendSms");
 const cloudinary = require("cloudinary");
+
 exports.registerMerchant = catchAsyncError(async (req, res, next) => {
   // const myCloud = await cloudinary.v2.uploader.upload(req.body.hero, {
   //   folder: "avatars",
@@ -29,6 +30,7 @@ exports.registerMerchant = catchAsyncError(async (req, res, next) => {
     //   url: myCloud ? myCloud.secure_url : "sampleurl",
     // },
   });
+
   await merchant.save();
   sendMerchantToken(merchant, 201, res);
   sendSms({
@@ -42,6 +44,7 @@ exports.registerMerchant = catchAsyncError(async (req, res, next) => {
   //   subject: "welcome",
   //   message,
   // });
+
   // const adminMessage = `you got a new request from  ${merchant.email}`;
   // await sendEmail({
   //   email: "admin@admin.com",
@@ -62,12 +65,12 @@ exports.signinMerchant = catchAsyncError(async (req, res, next) => {
   if (!merchant) {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
-
   const isCorrect = await bcrypt.compare(password, merchant.password);
   if (!isCorrect) return next(new ErrorHandler("Password does not match", 400));
 
   sendMerchantToken(merchant, 200, res);
 });
+
 exports.logoutMerchant = catchAsyncError(async (req, res, next) => {
   res.cookie("merchant_token", null, {
     expires: new Date(Date.now()),
@@ -79,6 +82,7 @@ exports.logoutMerchant = catchAsyncError(async (req, res, next) => {
     message: "Logged Out",
   });
 });
+
 // ADMINS
 exports.getAllMerchants = catchAsyncError(async (req, res, next) => {
   const merchants = await Merchant.find({}, { createdAt: "-1" });
@@ -90,6 +94,7 @@ exports.getAllMerchants = catchAsyncError(async (req, res, next) => {
     });
   }
 });
+
 // USERS
 exports.getMerchants = catchAsyncError(async (req, res, next) => {
   const pageSize = 2;

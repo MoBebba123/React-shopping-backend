@@ -154,3 +154,18 @@ exports.getMerchantItems = catchAsyncError(async (req, res, next) => {
     }
   });
 });
+const mongoose = require("mongoose");
+
+exports.getItemV2 = catchAsyncError(async (req, res, next) => {
+  const merchantId = req.params.merchantId;
+
+  const merchantItem = await Item.aggregate([
+    { $match: { merchant: new mongoose.Types.ObjectId(merchantId) } },
+    { $group: { _id: "$category" } },
+  ]);
+
+  res.json({
+    message: "done",
+    merchantItem,
+  });
+});
